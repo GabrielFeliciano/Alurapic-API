@@ -1,6 +1,8 @@
+import { HttpException, HttpStatus, Param, Query, Res } from "@nestjs/common";
 import { Body, Controller, Get } from "@nestjs/common";
+import { HttpErrorByCode } from "@nestjs/common/utils/http-error-by-code.util";
 import UserService from "src/user/user.service";
-import { FilterUserByItsName, FilterUsersByTheirName } from "./filters";
+import { QueryUserByName, QueryUsersByName, QueryUserByUsername } from "./filters";
 
 @Controller('search')
 export default class searchController {
@@ -9,16 +11,18 @@ export default class searchController {
     ) {}
 
     @Get('user/name')
-    filterUserByItsName (
-        @Body() filter: FilterUserByItsName
+    searchUserByItsName (
+        @Body() filter: QueryUserByName
     ) {
-        return this.userService.searchUserByItsName(filter.name, filter.caseSensitive);
+        return this.userService.searchUserByName(filter.name, filter.caseSensitive);
     }
 
-    @Get('users/name')
-    filterUsersByTheirNames (
-        @Body() filter: FilterUsersByTheirName
+    @Get('user/username')
+    searchUsersByUsername (
+        @Body() filter: QueryUserByUsername
     ) {
-        return this.userService.searchUsersByTheirNames(filter.names, filter.caseSensitive);
+        return this.userService.searchUserByUsername(
+            filter.username.toLowerCase()
+        );
     }
 }
